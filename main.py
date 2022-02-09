@@ -49,9 +49,6 @@ def hit_check(obj1, obj2, foo):
         obj1[0], obj1[1] = obj1[0] + 10, obj1[1] + 10
     if obj1 == obj2:
         return True
-    for item in b:
-        if item == a:
-            return True
 
 
 def rotate(l, x):
@@ -175,10 +172,10 @@ def main():
             score = score + 100
         check_events()
         draw_root()
-        # if snake_head.x <= -1 or snake_head.x >= WIDTH:
-        #     game_over()
-        # if snake_head.y <= -1 or snake_head.y >= HEIGHT:
-        #     game_over()
+        if snake_head.x <= -1 or snake_head.x >= WIDTH:
+            game_over()
+        if snake_head.y <= -1 or snake_head.y >= HEIGHT:
+            game_over()
         print(score)
         clock.tick(FPS)  # This limits the game, so it runs at the set FPS.
 
