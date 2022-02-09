@@ -7,7 +7,7 @@ pygame.init()  # This code gets the module moving and things initiliased
 
 # All constant values
 FPS = 10
-WIDTH, HEIGHT = 200, 200  # Width and height of the window
+WIDTH, HEIGHT = 400, 400  # Width and height of the window
 RED = (255, 32, 32)
 GREEN = (32, 255, 32)
 BLUE = (32, 32, 255)
