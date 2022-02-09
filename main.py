@@ -1,10 +1,9 @@
 import pygame
 from sys import exit
 from random import randrange
-import random
 import time
 
-pygame.init()  # Not sure why, but this is REQUIRED to be run before any other pygame code even though, without it, it runs fine. Do as those before say, at least in the beginning...
+pygame.init()  # This code gets the module moving and things initiliased
 
 # All constant values
 FPS = 10
@@ -23,8 +22,10 @@ FONT = pygame.font.Font(None, 32)
 END_GAME_TXT = FONT.render('Game Over', True, RED, BLACK)
 
 # This is where I set up pygame.events for ingame events, like moving the snake a tile or spawning power ups/enemies, if I do those.
-MOVE_SNAKE_EVENT = 1
+MOVE_SNAKE_EVENT = 25
 pygame.time.set_timer(MOVE_SNAKE_EVENT, 1000)
+# CHECK_SNAKE_HIT_EVENT = 26
+# pygame.time.set_timer(CHECK_SNAKE_HIT_EVENT, 1000)
 
 clock = pygame.time.Clock()  # I don't know what it's called when I do this, I'll call it "assigning functions." I think it's an apt description. Anyway, assigning funcs goes here.
 food_x, food_y = 110, 110
@@ -42,17 +43,18 @@ height_list = []  # The height of the window
 # This function is meant to be passed lists of x and y coords to check if they're the same, if they're the same that means they're colliding. Foo is for when were passing the snake's head because we
 # need to add pixels for it to work properly.
 def hit_check(obj1, obj2, foo):
-    a = list(obj1)
-    b = list(obj2)
-    print("ab", a, b)
     if foo:
         obj1[0], obj1[1] = obj1[0] + 10, obj1[1] + 10
     if obj1 == obj2:
         return True
+    if not foo:
+        for items in obj2:
+            if items[0] == obj1[0] and items[1] == obj1[1]:
+                return True
 
 
-def rotate(l, x):
-    return l[-x:] + l[:-x]
+def rotate(y, x):
+    return y[-x:] + y[:-x]
 
 
 # This functions handles the generation and drawing of the snake body
@@ -97,9 +99,9 @@ def draw_grid():
 # This function does as its name describes, it updates the window when called so things that happen behind the scenes (like a ship moving) actually shows up.
 def draw_root():
     ROOT.fill(BLACK)
-    draw_snake_body()
     draw_grid()
     draw_food()
+    draw_snake_body()
     pygame.draw.rect(ROOT, GREEN, snake_head)
     pygame.display.update()
 
@@ -139,6 +141,9 @@ def check_events():
             if move_dir == 'Right':
                 snake_head.x += VEL
                 print('moved snake')
+            snake_head_pos = [snake_head.x, snake_head.y]
+            if hit_check(snake_head_pos, snake_body_list, False):
+                game_over()
 
 
 # This runs when the player dies
@@ -163,9 +168,6 @@ def main():
     while True:
         food_pos = [food_x, food_y]
         snake_head_pos = [snake_head.x, snake_head.y]
-        print('snake', snake_head_pos)
-        if hit_check(snake_head_pos, snake_body_list, False):
-            game_over()
         if hit_check(snake_head_pos, food_pos, True):
             generate_food = True
             ate = True
@@ -176,7 +178,7 @@ def main():
             game_over()
         if snake_head.y <= -1 or snake_head.y >= HEIGHT:
             game_over()
-        print(score)
+        print('Score:', score)
         clock.tick(FPS)  # This limits the game, so it runs at the set FPS.
 
 
