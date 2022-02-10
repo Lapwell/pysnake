@@ -6,7 +6,7 @@ import time
 pygame.init()  # This code gets the module moving and things initiliased
 
 # All constant values
-FPS = 15
+FPS = 60
 WIDTH, HEIGHT = 200, 200  # Width and height of the window
 RED = (255, 32, 32)
 GREEN = (32, 255, 32)
@@ -41,6 +41,10 @@ width_list = []  # The width of the window
 height_list = []  # The height of the window
 
 
+def rotate(y, x):
+    return y[-x:] + y[:-x]
+
+
 # This function is meant to be passed lists of x and y coords to check if they're the same, if they're the same that means they're colliding. Foo is for when were passing the snake's head because we
 # need to add pixels for it to work properly.
 def hit_check(obj1, obj2, foo):
@@ -52,10 +56,6 @@ def hit_check(obj1, obj2, foo):
         for items in obj2:
             if items[0] == obj1[0] and items[1] == obj1[1]:
                 return True
-
-
-def rotate(y, x):
-    return y[-x:] + y[:-x]
 
 
 # This functions handles the generation and drawing of the snake body
@@ -100,9 +100,9 @@ def draw_grid():
 # This function does as its name describes, it updates the window when called so things that happen behind the scenes (like a ship moving) actually shows up.
 def draw_root():
     ROOT.fill(BLACK)
+    draw_snake_body()
     draw_grid()
     draw_food()
-    draw_snake_body()
     pygame.draw.rect(ROOT, GREEN, snake_head)
     pygame.display.update()
 
@@ -128,7 +128,6 @@ def check_events():
             pygame.quit()
             exit()
         if event.type == MOVE_SNAKE_EVENT:
-            print(MSE_TIME)
             snake_body_list.append([snake_head.x, snake_head.y, 20, 20])
             snake_body_list = rotate(snake_body_list, 1)
             snake_body_list.pop()
@@ -162,6 +161,7 @@ def game_over():
 def main():
     global snake_body_list
     global generate_food
+    global MSE_TIME
     global ate
     score = 0
     while True:
@@ -171,6 +171,9 @@ def main():
             generate_food = True
             ate = True
             score = score + 100
+            if MSE_TIME > 180:
+                MSE_TIME = MSE_TIME - 10
+                pygame.time.set_timer(MOVE_SNAKE_EVENT, MSE_TIME)
             print('Score:', score)
         check_events()
         draw_root()
