@@ -6,8 +6,8 @@ import time
 pygame.init()  # This code gets the module moving and things initiliased
 
 # All constant values
-FPS = 10
-WIDTH, HEIGHT = 400, 400  # Width and height of the window
+FPS = 15
+WIDTH, HEIGHT = 200, 200  # Width and height of the window
 RED = (255, 32, 32)
 GREEN = (32, 255, 32)
 BLUE = (32, 32, 255)
@@ -23,7 +23,8 @@ END_GAME_TXT = FONT.render('Game Over', True, RED, BLACK)
 
 # This is where I set up pygame.events for ingame events, like moving the snake a tile or spawning power ups/enemies, if I do those.
 MOVE_SNAKE_EVENT = 25
-pygame.time.set_timer(MOVE_SNAKE_EVENT, 1000)
+MSE_TIME = 1000
+pygame.time.set_timer(MOVE_SNAKE_EVENT, MSE_TIME)
 # CHECK_SNAKE_HIT_EVENT = 26
 # pygame.time.set_timer(CHECK_SNAKE_HIT_EVENT, 1000)
 
@@ -108,6 +109,7 @@ def draw_root():
 
 # This is function is for checking events (clicking the X button or getting keyboard input) and updating relevant variables.
 def check_events():
+    global MSE_TIME
     global move_dir
     global snake_body_list
     # These if statements check for keyboard inputs and sets an object's (test_rect as of writing) velocity to move the object in the correct direction.
@@ -126,21 +128,18 @@ def check_events():
             pygame.quit()
             exit()
         if event.type == MOVE_SNAKE_EVENT:
+            print(MSE_TIME)
             snake_body_list.append([snake_head.x, snake_head.y, 20, 20])
             snake_body_list = rotate(snake_body_list, 1)
             snake_body_list.pop()
             if move_dir == 'Up':
                 snake_head.y -= VEL
-                print('moved snake')
             if move_dir == 'Down':
                 snake_head.y += VEL
-                print('moved snake')
             if move_dir == 'Left':
                 snake_head.x -= VEL
-                print('moved snake')
             if move_dir == 'Right':
                 snake_head.x += VEL
-                print('moved snake')
             snake_head_pos = [snake_head.x, snake_head.y]
             if hit_check(snake_head_pos, snake_body_list, False):
                 game_over()
@@ -161,8 +160,8 @@ def game_over():
 
 # This is the main game function, rather obvious based on its name.
 def main():
-    global generate_food
     global snake_body_list
+    global generate_food
     global ate
     score = 0
     while True:
@@ -172,13 +171,13 @@ def main():
             generate_food = True
             ate = True
             score = score + 100
+            print('Score:', score)
         check_events()
         draw_root()
         if snake_head.x <= -1 or snake_head.x >= WIDTH:
             game_over()
         if snake_head.y <= -1 or snake_head.y >= HEIGHT:
             game_over()
-        print('Score:', score)
         clock.tick(FPS)  # This limits the game, so it runs at the set FPS.
 
 
