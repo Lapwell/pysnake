@@ -183,3 +183,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# Per ardua ad astra
+# Made by Lapwell (Byron.C)
